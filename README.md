@@ -28,7 +28,7 @@ docker compose up -d
 ```
 💡 You may want to remove the '/short-urls' bind-mount. 💡
 
-⚠️ ONLY IF the docker compose did not work because you could not pull the image from the remote registr, do this step ⚠️
+⚠️ ONLY IF the previous step (docker compose) raised some error because you could not pull the image from the remote registry, do this step ⚠️
 ```
 docker build --file discord-bot/Dockerfile --tag=public.whale.iluvatar.xyz:5050/discord-bot:latest discord-bot/
 docker build --file ghwh-listener/Dockerfile --tag=public.whale.iluvatar.xyz:5050/ghwh-listener:latest ghwh-listener/
