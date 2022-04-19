@@ -1,0 +1,9 @@
+# Python
+**/__pycache__
+
+# Environment file
+.env
+
+# Misc
+perms.txt
+

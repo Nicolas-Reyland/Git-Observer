@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+    ghwh-listenener:
+        image: whale.iluvatar.xyz:5000/ghwh-listener
+        volumes:
+            - /tmp/ghwh-listener-container/sockets:/sockets
+            - type: volume
+              source: git-hooks
+              target: /git-hooks
+        restart: always
+        network_mode: none
+        secrets:
+            - ghwh-listener-env
+    discord-bot: 
+        image: whale.iluvatar.xyz:5000/discord-bot
+        volumes:
+            - type: volume
+              source: git-hooks
+              target: /git-hooks
+            - type: bind
+              source: /var/www/url-short/s
+              target: /short-urls
+        restart: always
+        network_mode: host
+        secrets:
+            - discord-bot-env
+
+
+secrets:
+    ghwh-listener-env:
+        file: ./ghwh-listener/.env
+    discord-bot-env:
+        file: ./discord-bot/.env
+
+volumes:
+    git-hooks:
+        external: false
+
