@@ -17,22 +17,22 @@ git clone https://github.com/Nicolas-Reyland/git-observer
 cd git-observer
 ```
 
-Then, build the two images needed :
-```
-docker build --file discord-bot/Dockerfile --tag=discord-bot:latest discord-bot/
-docker build --file ghwh-listener/Dockerfile --tag=ghwh-listener:latest ghwh-listener/
-```
-
 Now is the time to enter the secrets. Please run this :
 ```
 ./setup-secrets.sh
 ```
 
-Once the script has been executed, deploy the project with docker compose :
+Once the script has been executed, deploy the project with docker compose (see next step if this fails because of the remote registry not being unavailable) :
 ```
 docker compose up -d
 ```
-⚠️ You may want to remove the '/short-urls' bind-mount. ⚠️
+💡 You may want to remove the '/short-urls' bind-mount. 💡
+
+⚠️ ONLY IF the docker compose did not work because you could not pull the image from the remote registr, do this step ⚠️
+```
+docker build --file discord-bot/Dockerfile --tag=public.whale.iluvatar.xyz:5050/discord-bot:latest discord-bot/
+docker build --file ghwh-listener/Dockerfile --tag=public.whale.iluvatar.xyz:5050/ghwh-listener:latest ghwh-listener/
+```
 
 Finally, you have to accept the incoming github webhooks. I am going to show you how to do it with `nginx`, but it's pretty straight-forward: we just need to redirect traffic to a unix socket.
 In one of you nginx sites files `sites-available`, add an upstream object like this :
