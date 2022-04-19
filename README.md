@@ -26,7 +26,7 @@ Once the script has been executed, deploy the project with docker compose (see n
 ```
 docker compose up -d
 ```
-💡 You may want to remove the '/var/www/url-short/s:/short-urls' bind-mount. 💡
+💡 You may want to remove the `/var/www/url-short/s:/short-urls` bind-mount. 💡
 
 ⚠️ ONLY IF the previous step (docker compose) raised some error because you could not pull the image from the remote registry, do this step ⚠️
 ```
