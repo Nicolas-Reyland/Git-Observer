@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
     ghwh-listenener:
-        image: whale.iluvatar.xyz:5000/ghwh-listener
+        image: ghwh-listener
         volumes:
             - /tmp/ghwh-listener-container/sockets:/sockets
             - type: volume
@@ -13,7 +13,7 @@ services:
         secrets:
             - ghwh-listener-env
     discord-bot: 
-        image: whale.iluvatar.xyz:5000/discord-bot
+        image: discord-bot
         volumes:
             - type: volume
               source: git-hooks
