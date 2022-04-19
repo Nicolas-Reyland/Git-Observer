@@ -58,13 +58,21 @@ def format_push_hook(d: dict):
     for commit in all_commits:
         # You have to come up with your own solution, here :-}
         ## Basically creating an short url for the commit site on github
-        random_str = "".join(random.choice(random_str_space) for _ in range(8))
-        with open(f"/short-urls/{random_str}", "w") as file_:
-            file_.write(commit["url"])
-        shortened_url = f"https://reyland.dev/s/{random_str}"
-        # End of short url generation
-        current_commit = commit_msg_prefix + commit["message"] + commit_msg_suffix + url_string.format(url=shortened_url)
-        messages_str += "\n" + current_commit
+        try:
+            # this is not even collision-safe but chances of a collision happening for two urls are
+            # around 3.5447041512174644e-11% so I'm not going to worry too much
+            # (won't have billions of pushes anyway)
+            random_str = "".join(random.choice(random_str_space) for _ in range(8))
+            with open(f"/short-urls/{random_str}", "w") as file_:
+                file_.write(commit["url"])
+            shortened_url = f"https://reyland.dev/s/{random_str}"
+        except:
+            # Try and come up with your own url shortener !
+            shortened_url = commit["url"]
+        finally:
+            # End of short url generation
+            current_commit = commit_msg_prefix + commit["message"] + commit_msg_suffix + url_string.format(url=shortened_url)
+            messages_str += "\n" + current_commit
     messages_str = messages_str.removeprefix("\n")
 
     # create msg str
