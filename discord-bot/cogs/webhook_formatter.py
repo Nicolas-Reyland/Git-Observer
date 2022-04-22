@@ -5,7 +5,7 @@ from datetime import datetime
 from string import ascii_letters, digits
 random_str_space = ascii_letters + digits
 
-push_string = """**__-----------------------------------------------__**
+push_string = """**__-----------------------__ {repo} __-----------------------__**
 New push from **{user_name}** !
  * branch: ***{branch_name}***
 {commit_messages}
@@ -18,12 +18,13 @@ def format_push_hook(d: dict):
     global push_string
     # important variables
 
+    ## repo and branch
+    repo = d["repository"]["name"]
+    branch = d["ref"].removeprefix("refs/heads/")
+
     ## commit hashes
     before_ref = d["before"]
     after_ref = d["after"]
-
-    ## branch
-    branch = d["ref"].removeprefix("refs/heads/")
 
     ## pusher
     pusher_name = d["pusher"]["name"]
@@ -77,6 +78,7 @@ def format_push_hook(d: dict):
 
     # create msg str
     main_msg = push_string.format(
+        repo=repo,
         user_name=pusher_name,
         from_hash=before_ref,
         to_hash=after_ref,

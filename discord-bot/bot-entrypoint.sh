@@ -2,7 +2,7 @@
 set -e
 chown -R app:app /app /git-hooks
 if [ -d "/short-urls" ]; then
-    chown -R app:app /short-urls
+    chown -R app:app /short-urls || true
 fi
 source /run/secrets/discord-bot-env
 source /py/bin/activate
