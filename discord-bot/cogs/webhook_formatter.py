@@ -14,9 +14,20 @@ New push from **{user_name}** !
 
 MAX_MSG_LENGTH = 1500
 
-def format_push_hook(d: dict):
+def format_push_hook(d: dict, config: dict):
     global push_string
-    # important variables
+
+    ## discord channel to write to
+    repo_full_name = d["repository"]["full_name"]
+    for project_name, project in config.items():
+        if project_name == "default":
+            continue
+        if project["name"] == repo_full_name:
+            channel_id = project["channel-id"]
+            break
+    else:
+        channel_id = config["default"]["channel-id"]
+        print(f"Didn't find project  associated to {repo_full_name}. Writing to default channel.")
 
     ## repo and branch
     repo = d["repository"]["name"]
@@ -96,7 +107,7 @@ def format_push_hook(d: dict):
     if modified:
         messages.extend(split_str_list_content("\nModified:\n```py\n", "* '{}'\n", "```", modified))
 
-    return messages
+    return messages, channel_id
 
 def split_str_list_content(prefix: str, fstr: str, suffix: str, l: list[str]) -> list[str]:
     """ Splits the list 'l' into messages using the 'prefix', 'fstr' and 'suffix' """

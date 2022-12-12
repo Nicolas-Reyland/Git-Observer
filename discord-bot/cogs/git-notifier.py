@@ -5,11 +5,18 @@ from discord.ext import commands, tasks
 from glob import glob
 import os, json, time
 import traceback
+import yaml
+import os
 
 from .webhook_formatter import format_push_hook
 
 GIT_HOOK_DUMPS_DIR = "/git-hooks"
 CHANNEL_ID = int(os.environ.get("DISCORD_CHANNEL_ID"))
+
+COG_ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
+config_path = os.path.join(COG_ROOT_DIR, "..", "config.yml")
+with open(config_path) as config:
+    CONFIG = yaml.load(config, Loader=yaml.FullLoader)
 
 class GithubBaseWebhooks(commands.Cog, name="Github Wehbooks"):
     def __init__(self, bot):
@@ -39,10 +46,6 @@ class GithubBaseWebhooks(commands.Cog, name="Github Wehbooks"):
     async def git_hook_notifier_task(self):
         if not os.listdir(GIT_HOOK_DUMPS_DIR):
             return
-        channel = self.bot.get_channel(CHANNEL_ID)
-        if channel is None:
-            print("Waiting for cache ...")
-            return
 
         for git_hook_file_path in map(
             lambda f: os.path.join(GIT_HOOK_DUMPS_DIR, f),
@@ -53,21 +56,29 @@ class GithubBaseWebhooks(commands.Cog, name="Github Wehbooks"):
             print(f"UTC: {timestamp}", git_hook_file_path)
             with open(git_hook_file_path, "r") as git_hook_file:
                 file_content = git_hook_file.read()
-                await self.notify_channel(channel, file_content)
+                await self.notify_event(file_content)
             os.remove(git_hook_file_path)
 
         print("All done")
 
-    async def notify_channel(self, channel, json_content):
+    async def notify_event(self, json_content):
         json_obj = json.loads(json_content)
         if "head_commit" not in json_obj.keys():
             print("Not a push hook")
             return
         try:
-            messages = format_push_hook(json_obj)
+            messages, channel_id = format_push_hook(json_obj, CONFIG)
         except Exception as e:
             error_msg = traceback.format_exc()
             messages = (f"Error in parsing github hook json data :\n```{error_msg}```",)
+            channel_id = CONFIG["default"]["channel-id"]
+
+        channel = self.bot.get_channel(channel_id)
+        if channel is None:
+            print("Waiting for cache ...")
+            return
+        print(f"Writing to channel {channel_id}")
+
         for msg_string in messages:
             try:
                 await channel.send(msg_string)

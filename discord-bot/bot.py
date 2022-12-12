@@ -2,6 +2,7 @@
 import os
 import discord
 from discord.ext import commands
+import yaml
 
 ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
 ENABLED_COGS = [
