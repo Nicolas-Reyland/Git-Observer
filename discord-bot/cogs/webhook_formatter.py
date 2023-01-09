@@ -3,16 +3,18 @@ from __future__ import annotations
 import os, json, random
 from datetime import datetime
 from string import ascii_letters, digits
+
 random_str_space = ascii_letters + digits
 
-push_string = """**__-----------------------__ {repo} __-----------------------__**
+push_string1 = """**__-----------------------__ {repo} __-----------------------__**
 New push from **{user_name}** !
  * branch: ***{branch_name}***
-{commit_messages}
- * Time: {time}
+ """
+push_string2 = """ * Time: {time}
  * hashes: `{from_hash}` → `{to_hash}`"""
 
 MAX_MSG_LENGTH = 1500
+
 
 def format_push_hook(d: dict, config: dict):
     global push_string
@@ -27,7 +29,9 @@ def format_push_hook(d: dict, config: dict):
             break
     else:
         channel_id = config["default"]["channel-id"]
-        print(f"Didn't find project  associated to {repo_full_name}. Writing to default channel.")
+        print(
+            f"Didn't find project  associated to {repo_full_name}. Writing to default channel."
+        )
 
     ## repo and branch
     repo = d["repository"]["name"]
@@ -61,12 +65,16 @@ def format_push_hook(d: dict, config: dict):
     # all commits
     all_commits = d["commits"]
     added = list(set([file_ for commit in all_commits for file_ in commit["added"]]))
-    removed = list(set([file_ for commit in all_commits for file_ in commit["removed"]]))
-    modified = list(set([file_ for commit in all_commits for file_ in commit["modified"]]))
+    removed = list(
+        set([file_ for commit in all_commits for file_ in commit["removed"]])
+    )
+    modified = list(
+        set([file_ for commit in all_commits for file_ in commit["modified"]])
+    )
     commit_msg_prefix = " * msg : __"
     commit_msg_suffix = "__"
     url_string = " (<{url}>)"
-    messages_str: str = ""
+    commit_messages: list[str] = list()
     for commit in all_commits:
         # You have to come up with your own solution, here :-}
         ## Basically creating an short url for the commit site on github
@@ -83,36 +91,55 @@ def format_push_hook(d: dict, config: dict):
             shortened_url = commit["url"]
         finally:
             # End of short url generation
-            current_commit = commit_msg_prefix + commit["message"] + commit_msg_suffix + url_string.format(url=shortened_url)
-            messages_str += "\n" + current_commit
-    messages_str = messages_str.removeprefix("\n")
+            current_commit = (
+                commit_msg_prefix
+                + commit["message"]
+                + commit_msg_suffix
+                + url_string.format(url=shortened_url)
+            )
+            commit_messages.append(current_commit + "\n")
+    commit_messages[-1] = commit_messages[-1].removesuffix("\n")
 
     # create msg str
-    main_msg = push_string.format(
+    message_part1 = push_string1.format(
         repo=repo,
         user_name=pusher_name,
+        branch_name=branch,
+    )
+    message_part2 = push_string2.format(
+        time=time_str,
         from_hash=before_ref,
         to_hash=after_ref,
-        branch_name=branch,
-        commit_messages=messages_str,
-        time=time_str,
     )
 
-    messages: list[str] = [ main_msg ]
+    messages: list[str] = [
+        message_part1,
+        *split_str_list_content("", "{}", "", commit_messages),
+        message_part2,
+    ]
 
     if added:
-        messages.extend(split_str_list_content("\nAdded:\n```diff\n", "+ '{}'\n", "```", added))
+        messages.extend(
+            split_str_list_content("\nAdded:\n```diff\n", "+ '{}'\n", "```", added)
+        )
     if removed:
-        messages.extend(split_str_list_content("\nRemoved:\n```diff\n", "- '{}'\n", "```", removed))
+        messages.extend(
+            split_str_list_content("\nRemoved:\n```diff\n", "- '{}'\n", "```", removed)
+        )
     if modified:
-        messages.extend(split_str_list_content("\nModified:\n```py\n", "* '{}'\n", "```", modified))
+        messages.extend(
+            split_str_list_content("\nModified:\n```py\n", "* '{}'\n", "```", modified)
+        )
 
     return messages, channel_id
 
-def split_str_list_content(prefix: str, fstr: str, suffix: str, l: list[str]) -> list[str]:
-    """ Splits the list 'l' into messages using the 'prefix', 'fstr' and 'suffix' """
 
-    messages: list [str] = list()
+def split_str_list_content(
+    prefix: str, fstr: str, suffix: str, l: list[str]
+) -> list[str]:
+    """Splits the list 'l' into messages using the 'prefix', 'fstr' and 'suffix'"""
+
+    messages: list[str] = list()
     index: int = 0
     num_elements: int = len(l)
     current_msg: str = ""
@@ -129,4 +156,3 @@ def split_str_list_content(prefix: str, fstr: str, suffix: str, l: list[str]) ->
         msg = prefix + current_msg + suffix
         messages.append(msg)
     return messages
-

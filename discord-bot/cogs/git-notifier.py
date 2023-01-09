@@ -18,6 +18,7 @@ config_path = os.path.join(COG_ROOT_DIR, "..", "config.yml")
 with open(config_path) as config:
     CONFIG = yaml.load(config, Loader=yaml.FullLoader)
 
+
 class GithubBaseWebhooks(commands.Cog, name="Github Wehbooks"):
     def __init__(self, bot):
         self.bot = bot
@@ -92,4 +93,3 @@ class GithubBaseWebhooks(commands.Cog, name="Github Wehbooks"):
 
 def setup(bot):
     bot.add_cog(GithubBaseWebhooks(bot))
-
