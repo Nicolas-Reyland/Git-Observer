@@ -3,12 +3,12 @@ Discord bot for notifying on github events
 
 ## Installation
 
-You will need the following before installing this project:
+You will need the following before setting this project up:
  - **docker** to be installed
  - **docker compose** to be installed (v2 is better)
  - a completely setup dicord bot (no code needed, but on the discord developer page) [tutorial](https://discordpy.readthedocs.io/en/stable/discord.html)
  - the discord bot authentification token (keep this secret) [documentation](https://discord.com/developers/docs/topics/oauth2#bots)
- - the channel id of the discord channel you want to write messages to (maybe keep this secret ?) [tutorial](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)
+ - the default channel id of the discord channel you want to write messages to (maybe keep this secret ?) [tutorial](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)
  - a github webhook secret (keep this secret) [tutorial](https://docs.github.com/en/developers/webhooks-and-events/webhooks/creating-webhooks)
 
 First, clone and cd into the project folder.
@@ -49,4 +49,22 @@ location /github-webhooks {
 }
 ```
 
-The, test your new config (`nginx -t`) and reload the nginx service. You should be all setup !!
+The, test your new config (`nginx -t`) and reload the nginx service.
+
+
+## Configuration
+To add github projects to the observer, you should write the `discord-bot/config/config.yml` file (there is an example file).
+It should look like this:
+```yml
+project1:
+  name: "UserName/project1"
+  channel-id: 1234567890
+project2:
+  name: "UserName2/projetc2"
+  channel-id: 10987654321
+default:
+  name: "default"
+  channel-id: 127001
+```
+
+You should be all setup !!
