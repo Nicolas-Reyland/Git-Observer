@@ -3,7 +3,7 @@
 echo "[Discord Secrets]"
 echo -n "Enter your discord bot token : "
 read discord_bot_token
-echo -n "Enter the discord channel id for the bot messages : "
+echo -n "Enter the default discord channel id : "
 read discord_channel_id
 echo "[Github Secret]"
 echo -n "Enter the github webhook secret : "
