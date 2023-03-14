@@ -13,7 +13,7 @@ GIT_HOOK_DUMPS_DIR = "/git-hooks"
 CHANNEL_ID = int(os.environ.get("DISCORD_CHANNEL_ID"))
 
 COG_ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
-config_path = "/config/config.yml"
+config_path = "/config.yml"
 with open(config_path) as config:
     CONFIG = yaml.load(config, Loader=yaml.FullLoader)
 

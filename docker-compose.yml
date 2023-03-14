@@ -15,12 +15,10 @@ services:
     discord-bot: 
         image: public.whale.iluvatar.xyz:5050/discord-bot
         volumes:
+            - ./discord-bot/config.yml:/config.yml
             - type: volume
               source: git-hooks
               target: /git-hooks
-            - type: bind
-              source: discord-bot/config
-              target: /config
             # this is optional
             - type: bind
               source: /var/www/url-short/s

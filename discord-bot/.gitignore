@@ -4,3 +4,6 @@
 # Trash files
 *.json
 
+# config file
+config.yml
+
