@@ -18,9 +18,13 @@ services:
             - type: volume
               source: git-hooks
               target: /git-hooks
-#            - type: bind
-#              source: /var/www/url-short/s
-#              target: /short-urls
+            - type: bind
+              source: discord-bot/config
+              target: /config
+            # this is optional
+            - type: bind
+              source: /var/www/url-short/s
+              target: /short-urls
         restart: always
         network_mode: host
         secrets:

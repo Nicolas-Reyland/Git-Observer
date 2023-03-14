@@ -13,7 +13,7 @@ RUN python -m venv /py && \
     chmod +x /bot-entrypoint.sh && \
     adduser --disabled-password --no-create-home app
 
-COPY ./config.yml ./bot.py /app/
+COPY ./bot.py /app/
 COPY ./cogs /app/cogs
 
 WORKDIR /app

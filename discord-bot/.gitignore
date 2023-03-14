@@ -1,6 +1,6 @@
 # Environment file
 .env
 
-# config file
-config.yml
+# Trash files
+*.json
 

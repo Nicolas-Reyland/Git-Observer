@@ -1,0 +1,10 @@
+# To be renamed config.yml for it to be used
+project1:
+  name: "UserName/project1"
+  channel-id: 1234567890
+project2:
+  name: "UserName2/projetc2"
+  channel-id: 10987654321
+default:
+  name: "default"
+  channel-id: 127001
