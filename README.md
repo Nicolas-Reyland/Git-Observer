@@ -34,26 +34,27 @@ docker build --file discord-bot/Dockerfile --tag=public.whale.iluvatar.xyz:5050/
 docker build --file ghwh-listener/Dockerfile --tag=public.whale.iluvatar.xyz:5050/ghwh-listener:latest ghwh-listener/
 ```
 
-Finally, you have to accept the incoming github webhooks. I am going to show you how to do it with `nginx`, but it's pretty straight-forward: we just need to redirect traffic to a unix socket.
-In one of you nginx sites files `sites-available`, add an upstream object like this :
+Finally, you have to accept the incoming github webhooks. You are free to do this however you want, but here's an example of how to forward requests to the docker container using `nginx`:
+
+Add an upstream that looks like this :
 ```
 upstream github-webhook-upstream {
   server unix:///tmp/ghwh-listener-container/sockets/ghwh-listener-nw.sock;
 }
 ```
 
-And inside your `server` block, add a location (adapt location to your liking) :
+Inside your `server` block, add a location (adapt location to your liking) :
 ```
 location /github-webhooks {
   proxy_pass http://github-webhook-upstream;
 }
 ```
 
-The, test your new config (`nginx -t`) and reload the nginx service.
+Then, test your new config (`nginx -t`) and reload the nginx service.
 
 
 ## Configuration
-To add github projects to the observer, you should write the `discord-bot/config/config.yml` file (there is an example file).
+To add github projects to the observer, you should write the `discord-bot/config.yml` file (there is an example file).
 It should look like this:
 ```yml
 project1:
@@ -67,4 +68,4 @@ default:
   channel-id: 127001
 ```
 
-You should be all setup !!
+You should be all set up !!
