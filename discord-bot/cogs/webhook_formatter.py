@@ -71,7 +71,7 @@ def format_push_hook(d: dict, config: dict):
     modified = list(
         set([file_ for commit in all_commits for file_ in commit["modified"]])
     )
-    commit_msg_prefix = " * msg : __"
+    commit_msg_prefix = "* msg : __"
     commit_msg_suffix = "__"
     url_string = " (<{url}>)"
     commit_messages: list[str] = list()
