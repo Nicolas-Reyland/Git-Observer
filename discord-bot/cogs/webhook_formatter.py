@@ -10,8 +10,8 @@ push_string1 = """**__-----------------------__ {repo} __-----------------------
 New push from **{user_name}** !
  * branch: ***{branch_name}***
  """
-push_string2 = """ * Time: {time}
- * hashes: `{from_hash}` → `{to_hash}`"""
+push_string2 = """* Time: {time}
+* hashes: `{from_hash}` → `{to_hash}`"""
 
 MAX_MSG_LENGTH = 1500
 
