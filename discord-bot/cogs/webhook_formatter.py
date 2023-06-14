@@ -90,7 +90,7 @@ def format_push_hook(d: dict, config: dict):
             # End of short url generation
             current_commit = (
                 commit_msg_prefix
-                + commit["message"]
+                + commit["message"].replace("\n", "__\n", 1)
                 + commit_msg_suffix
                 + url_string.format(url=shortened_url)
             )
